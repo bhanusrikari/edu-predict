@@ -7,9 +7,16 @@ import {
 } from '../types';
 function getBaseUrl(): string {
   const envUrl = (import.meta.env.VITE_API_BASE_URL as string)?.trim();
-  if (!envUrl) return '/api/v1';
-  const cleanUrl = envUrl.replace(/\/+$/, '');
-  return cleanUrl.endsWith('/api/v1') ? cleanUrl : `${cleanUrl}/api/v1`;
+  if (envUrl) {
+    const cleanUrl = envUrl.replace(/\/+$/, '');
+    return cleanUrl.endsWith('/api/v1') ? cleanUrl : `${cleanUrl}/api/v1`;
+  }
+  // In production (Vercel), default directly to the live Render backend
+  if (import.meta.env.PROD) {
+    return 'https://edu-predict-rpua.onrender.com/api/v1';
+  }
+  // In local development (npm run dev), use the Vite proxy
+  return '/api/v1';
 }
 
 const BASE_URL = getBaseUrl();
