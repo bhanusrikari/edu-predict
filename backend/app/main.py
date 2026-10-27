@@ -23,13 +23,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include API Routers under settings.API_V1_STR
-app.include_router(auth.router, prefix=settings.API_V1_STR)
-app.include_router(students.router, prefix=settings.API_V1_STR)
-app.include_router(analytics.router, prefix=settings.API_V1_STR)
-app.include_router(ml.router, prefix=settings.API_V1_STR)
-app.include_router(at_risk.router, prefix=settings.API_V1_STR)
-app.include_router(reports.router, prefix=settings.API_V1_STR)
+# Include API Routers under settings.API_V1_STR (/api/v1) and also at root level for robustness
+for r in (auth.router, students.router, analytics.router, ml.router, at_risk.router, reports.router):
+    app.include_router(r, prefix=settings.API_V1_STR)
+    app.include_router(r)
 
 @app.on_event("startup")
 def on_startup():
