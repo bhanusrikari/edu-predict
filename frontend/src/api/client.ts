@@ -5,7 +5,14 @@ import {
   TrainModelResponse, SinglePredictionRequest, SinglePredictionResponse,
   AtRiskSummary, StudentReport, RecommendationPlan
 } from '../types';
-const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || '/api/v1';
+function getBaseUrl(): string {
+  const envUrl = (import.meta.env.VITE_API_BASE_URL as string)?.trim();
+  if (!envUrl) return '/api/v1';
+  const cleanUrl = envUrl.replace(/\/+$/, '');
+  return cleanUrl.endsWith('/api/v1') ? cleanUrl : `${cleanUrl}/api/v1`;
+}
+
+const BASE_URL = getBaseUrl();
 
 export class ApiError extends Error {
   status: number;
